@@ -1,23 +1,23 @@
-services:
-  nginx:
-    build: ./nginx
-    ports:
-      - "80:80"
-    depends_on:
-      - frontend
-      - backend
-    networks:
-      - appnet
+services: # service 정의
+  nginx: # service 이름
+    build: ./nginx # 이 폴더의 Dockerfile로 build
+    ports: # 외부 port 열기
+      - "80:80" # port forwarding
+    depends_on: # 실행 순서
+      - frontend # frontend 먼저 띄우고 nginx 실행
+      - backend # backend 먼저 띄우고 nginx 실행
+    networks: # 지정 network 사용
+      - appnet # appnet network를 사용해서 다른 service랑 통신
 
   frontend:
     build: ./frontend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    expose:
+    volumes: # container가 아닌 volume이나 내 computer에 연결하는 설정
+      - ./frontend:/app # 내 computer의 frontend 폴더를 docker container app이랑 연결
+      - /app/node_modules # container의 app 안에 있는 node_module은 덮어씌우기 금지
+    expose: # 내부 port
       - "5173"
-    depends_on:
-      - backend
+    depends_on: 
+      - backend # backend 먼저 띄우고 frontend 실행
     networks:
       - appnet
 
@@ -25,8 +25,8 @@ services:
     build: ./backend
     expose:
       - "4000"
-    environment:
-      - MONGO_URL=mongodb://mongodb:27017/practice
+    environment: # 환경 변수
+      - MONGO_URL=mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/practice?authSource=admin # 내 계정의 container service 이름으로 DB 접속
     depends_on:
       - mongodb
     networks:
@@ -36,8 +36,11 @@ services:
     image: mongo:8.0
     expose:
       - "27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER} # DB 계정 ID
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD} # DB 비밀번호
     volumes:
-      - mongo_data:/data/db
+      - mongo_data:/data/db # docker의 mongo_data랑 mongoDB의 data 저장 경로랑 연결
     networks:
       - appnet
 
@@ -45,4 +48,4 @@ networks:
   appnet:
 
 volumes:
-  mongo_data:
+  mongo_data: # DB 저장용 volume
