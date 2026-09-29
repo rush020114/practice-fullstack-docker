@@ -2,7 +2,7 @@ services: # service 정의
   nginx: # service 이름
     build: ./nginx # 이 폴더의 Dockerfile로 build
     ports: # 외부 port 열기
-      - "80:80" # port forwarding
+      - "80:80" # port forwarding(localhost)
     depends_on: # 실행 순서
       - frontend # frontend 먼저 띄우고 nginx 실행
       - backend # backend 먼저 띄우고 nginx 실행
