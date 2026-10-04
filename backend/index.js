@@ -24,10 +24,13 @@ const resolvers = {
   },
 };
 
+// apollo server 객체 만들기
 const server = new ApolloServer({ typeDefs, resolvers });
 
+// apollo server 실행 함수
 const { url } = await startStandaloneServer(server, {
+  // 4000 port를 개방하고 모든 ip의 요청을 다 받겠다
   listen: { host: '0.0.0.0', port: 4000 },
 });
 
-console.log(`🚀 Server ready at ${url}`);
+console.log(`Server ready at ${url}`);
