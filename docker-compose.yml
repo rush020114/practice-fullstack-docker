@@ -1,9 +1,6 @@
 services: # service 정의
   nginx: # service 이름
     build: ./nginx # 이 폴더의 Dockerfile로 build
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
     ports: # 외부 port 열기
       - "80:80" # port forwarding(localhost)
     depends_on: # 실행 순서
@@ -26,6 +23,9 @@ services: # service 정의
 
   backend:
     build: ./backend
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
     expose:
       - "4000"
     environment: # 환경 변수
